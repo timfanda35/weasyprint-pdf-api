@@ -2,6 +2,7 @@
 
 FROM alpine:3.18
 
+EXPOSE 8000
 ENV PORT=8000
 
 WORKDIR /app
