@@ -40,6 +40,12 @@ POST `/pdfs`, for example:
 
 Response will be streaming download.
 
+You can also specific filename:
+
+```json
+{ "filename": "shipping-label", "html": "<h1>Hello World</h1>" }
+```
+
 ## Development
 
 ### 1. Build container image
@@ -60,4 +66,18 @@ make dev-console
 
 ```bash
 uvicorn main:app --reload --host 0.0.0.0
+```
+
+## Test
+
+Install `httpx` and `pytest`
+
+```
+pip install httpx pytest
+```
+
+Run test cases
+
+```
+pytest
 ```

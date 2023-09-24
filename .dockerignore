@@ -2,3 +2,4 @@ __pycache__
 Dockerfile
 Makefile
 README.md
+test_main.py
