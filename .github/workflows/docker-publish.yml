@@ -14,22 +14,60 @@ on:
   pull_request:
 
 env:
-  # TODO: Change variable to your image's name.
-  IMAGE_NAME: simple-channel-notify
+  IMAGE_NAME: weasyprint-api
 
 jobs:
+  # Testing
+  testing:
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags')}}
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: '3.11'
+          # Optional - x64 or x86 architecture, defaults to x64
+          architecture: 'x64'
+
+      - name: Test API
+        run: |
+          # Install packages
+          pip install -r requirements.txt
+
+          # Install test packages
+          pip install httpx pytest
+
+          # move work directory
+          cd ./app
+
+          # Run testing
+          pytest
+
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: |
+      ${{
+        always() &&
+        github.event_name == 'push' &&
+        (needs.testing.result == 'success' || needs.testing.result == 'skipped')
+      }}
+    needs: testing
 
     permissions:
       contents: read
       packages: write
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
