@@ -15,6 +15,6 @@ COPY ./requirements.txt /app/requirements.txt
 
 RUN pip3 install -r requirements.txt
 
-COPY ./main.py /app/
+COPY ./app/main.py /app/
 
 CMD ["sh", "-c", "uvicorn main:app --host=0.0.0.0 --port=$PORT"]
