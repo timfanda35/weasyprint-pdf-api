@@ -14,7 +14,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: weasyprint-api
+  IMAGE_NAME: weasyprint-pdf-api
 
 jobs:
   # Testing
