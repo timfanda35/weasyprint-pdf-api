@@ -12,6 +12,12 @@ A Restful API for print PDF with WeasyPrint.
 docker pull ghcr.io/timfanda35/weasyprint-pdf-api:latest
 ```
 
+Or use specific version
+
+```
+docker pull ghcr.io/timfanda35/weasyprint-pdf-api:v1.0.0
+```
+
 ### Run Container
 
 Run with default port `8000`
