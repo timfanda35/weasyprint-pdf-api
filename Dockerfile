@@ -9,7 +9,7 @@ WORKDIR /app
 
 RUN apk add --no-cache \
   py3-pip py3-pillow py3-cffi py3-brotli gcc musl-dev python3-dev pango \
-  font-noto-cjk
+  ttf-dejavu ttf-droid ttf-freefont ttf-liberation font-noto font-noto-cjk
 
 COPY ./requirements.txt /app/requirements.txt
 
