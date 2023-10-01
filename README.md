@@ -15,7 +15,7 @@ docker pull ghcr.io/timfanda35/weasyprint-pdf-api:latest
 Or use specific version
 
 ```
-docker pull ghcr.io/timfanda35/weasyprint-pdf-api:v1.0.0
+docker pull ghcr.io/timfanda35/weasyprint-pdf-api:1.0.0
 ```
 
 ### Run Container
