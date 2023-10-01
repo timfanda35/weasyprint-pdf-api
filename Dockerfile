@@ -1,20 +1,6 @@
-FROM python:3.11-alpine as base
+# https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#alpine-3-12
 
-# Build Stage
-FROM base as builder
-
-RUN apk add --no-cache \
-  gcc libffi-dev musl-dev \
-  python3-dev py3-cffi
-
-RUN mkdir /install
-WORKDIR /install
-
-COPY requirements.txt /requirements.txt
-RUN pip install --prefix=/install -r /requirements.txt
-
-# Application
-FROM base
+FROM alpine:3.18
 
 EXPOSE 8000
 ENV PORT=8000
@@ -22,10 +8,13 @@ ENV PORT=8000
 WORKDIR /app
 
 RUN apk add --no-cache \
-  pango \
+  py3-pip py3-pillow py3-cffi py3-brotli gcc musl-dev python3-dev pango \
   font-noto-cjk
 
-COPY --from=builder /install /usr/local
+COPY ./requirements.txt /app/requirements.txt
+
+RUN pip3 install -r requirements.txt
+
 COPY ./app/main.py /app/
 
 CMD ["sh", "-c", "uvicorn main:app --host=0.0.0.0 --port=$PORT"]
