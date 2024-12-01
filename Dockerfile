@@ -17,4 +17,9 @@ RUN pip3 install -r requirements.txt
 
 COPY ./app/main.py /app/
 
+# Add environment variable for API key
+ENV API_KEY=""
+ENV ALLOWED_HOSTS="*"
+ENV CORS_ORIGINS="*"
+
 CMD ["sh", "-c", "uvicorn main:app --host=0.0.0.0 --port=$PORT"]
