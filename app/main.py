@@ -4,11 +4,11 @@ import os
 import logging
 from typing import Annotated
 
-from fastapi import FastAPI, Response, Header, HTTPException, Depends
+from fastapi import FastAPI, Header, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel
 from functools import lru_cache
 from weasyprint import HTML, urls
 
@@ -21,8 +21,6 @@ load_dotenv()
 class Settings:
     def __init__(self):
         self.API_KEY = os.getenv("API_KEY")
-        if not self.API_KEY:
-            raise ValueError("API_KEY environment variable must be set")
         self.ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
         self.CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
 
@@ -55,7 +53,7 @@ app.add_middleware(
 )
 
 async def verify_api_key(x_api_key: Annotated[str | None, Header()] = None):
-    if not x_api_key or x_api_key != get_settings().API_KEY:
+    if get_settings().API_KEY and (not x_api_key or x_api_key != get_settings().API_KEY):
         raise HTTPException(
             status_code=401,
             detail="Invalid or missing API key"
