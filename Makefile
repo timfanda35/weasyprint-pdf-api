@@ -17,4 +17,10 @@ compile:
 	. .venv/bin/activate && uv pip compile requirements.in > requirements.txt
 
 sync:
-	. .venv/bin/activate && uv sync
+	. .venv/bin/activate && uv pip sync requirements.txt
+
+devsetup:
+	. .venv/bin/activate && uv pip compile requirements.in dev-requirements.in > dev-requirements.txt && uv pip sync dev-requirements.txt
+
+test: devsetup
+	. .venv/bin/activate && uv run pytest

@@ -96,7 +96,7 @@ async def print_pdf(
 
     headers = {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': f'attachment; filename="{filename}.pdf"'
+        'Content-Disposition': f'attachment; name="{filename}"; filename="{filename}.pdf"'
     }
     return StreamingResponse(
         io.BytesIO(byte_string),
