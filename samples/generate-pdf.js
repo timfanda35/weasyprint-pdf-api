@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
+const minimist = require('minimist');
 
-async function generatePDF(htmlFilePath) {
+async function generatePDF(htmlFilePath, serverUrl = 'http://localhost:8000', apiKey = null) {
     try {
         // Check if file exists
         if (!fs.existsSync(htmlFilePath)) {
@@ -21,12 +22,18 @@ async function generatePDF(htmlFilePath) {
             html: htmlContent
         };
 
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (apiKey) {
+            headers['x-api-key'] = apiKey;
+        }
+
         // Send the request to the PDF generation endpoint
-        const response = await fetch('http://localhost:8000/pdfs', {
+        const response = await fetch(`${serverUrl}/pdfs`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(payload)
         });
 
@@ -48,15 +55,26 @@ async function generatePDF(htmlFilePath) {
     }
 }
 
+// Parse command line arguments
+const argv = minimist(process.argv.slice(2), {
+    string: ['server', 'api-key'],
+    alias: { 
+        s: 'server',
+        k: 'api-key'
+    }
+});
+
 // Check if filename is provided
-if (process.argv.length < 3) {
+if (argv._.length === 0) {
     console.error('Please provide an HTML file path as an argument');
-    console.error('Usage: node generate-pdf.js <path-to-html-file>');
+    console.error('Usage: node generate-pdf.js [--server <url>] [--api-key <key>] <path-to-html-file>');
     process.exit(1);
 }
 
 // Get the file path from command line arguments
-const htmlFilePath = process.argv[2];
+const htmlFilePath = argv._[0];
+const serverUrl = argv.server || 'http://localhost:8000';
+const apiKey = argv['api-key'] || null;
 
-// Run the function with the provided file path
-generatePDF(htmlFilePath); 
+// Run the function with the provided file path, server URL, and API key
+generatePDF(htmlFilePath, serverUrl, apiKey); 
