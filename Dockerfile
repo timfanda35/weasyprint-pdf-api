@@ -1,20 +1,61 @@
-# https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#alpine-3-12
+FROM python:3.12-alpine AS base
 
-FROM alpine:3.18
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Build Stage
+FROM base AS builder
+
+WORKDIR /build
+
+# Install build dependencies
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    jpeg-dev \
+    zlib-dev \
+    python3-dev
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Application Stage
+FROM base
 
 EXPOSE 8000
 ENV PORT=8000
+ENV PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /app
 
+# Install runtime dependencies
 RUN apk add --no-cache \
-  py3-pip py3-pillow py3-cffi py3-brotli gcc musl-dev python3-dev pango \
-  ttf-dejavu ttf-droid ttf-freefont ttf-liberation font-noto font-noto-cjk
+    pango \
+    libffi \
+    libjpeg \
+    zlib \
+    ttf-dejavu ttf-droid ttf-freefont ttf-liberation font-noto font-noto-cjk
 
-COPY ./requirements.txt /app/requirements.txt
+# Create a non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-RUN pip3 install -r requirements.txt
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
 
-COPY ./app/main.py /app/
+# Copy application code
+COPY ./app /app
 
-CMD ["sh", "-c", "uvicorn main:app --host=0.0.0.0 --port=$PORT"]
+# Change ownership to non-root user
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
+
+CMD ["sh", "-c", "uvicorn main:app --host=0.0.0.0 --port=${PORT}"]
+
