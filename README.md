@@ -54,27 +54,7 @@ You can also specific filename:
 
 ## Development
 
-### 1. Build container image
-
-```bash
-make build
-```
-
-### 2. Attach container
-
-It create a container and bind port `8000`.
-
-```bash
-make dev-console
-```
-
-### 3. Start server
-
-```bash
-uvicorn main:app --reload --host 0.0.0.0
-```
-
-### Or just use thg dev container with VS Code
+Use thg dev container with VS Code
 
 https://vscode.com.tw/docs/devcontainers/containers
 

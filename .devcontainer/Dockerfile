@@ -1,13 +1,22 @@
-# https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#alpine-3-12
+FROM python:3.12-alpine
 
-FROM alpine:3.18
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-EXPOSE 8000
-ENV PORT=8000
-
-WORKDIR /app
-
+# Install build dependencies
 RUN apk add --no-cache \
-  git \
-  py3-pip py3-pillow py3-cffi py3-brotli gcc musl-dev python3-dev pango \
-  ttf-dejavu ttf-droid ttf-freefont ttf-liberation font-noto font-noto-cjk
+    gcc \
+    musl-dev \
+    libffi-dev \
+    jpeg-dev \
+    zlib-dev \
+    python3-dev \
+    pango \
+    ttf-dejavu ttf-droid ttf-freefont ttf-liberation font-noto font-noto-cjk
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip install --no-cache-dir -r requirements.txt
