@@ -74,16 +74,20 @@ make dev-console
 uvicorn main:app --reload --host 0.0.0.0
 ```
 
+### Or just use thg dev container with VS Code
+
+https://vscode.com.tw/docs/devcontainers/containers
+
 ## Test
 
 Install `httpx` and `pytest`
 
-```
+```bash
 pip install httpx pytest
 ```
 
 Run test cases
 
-```
+```bash
 pytest
 ```
