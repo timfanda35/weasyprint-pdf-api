@@ -1,6 +1,6 @@
 # https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#alpine-3-12
 
-FROM alpine:3.18
+FROM alpine:3.23
 
 EXPOSE 8000
 ENV PORT=8000
