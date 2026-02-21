@@ -1,3 +1,3 @@
 weasyprint==v68.1
-fastapi==0.129.0
+fastapi==0.129.1
 uvicorn[standard]==0.41.0
