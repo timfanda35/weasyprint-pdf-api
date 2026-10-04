@@ -15,7 +15,7 @@ class PrintPdfRequest(BaseModel):
 app = FastAPI()
 
 @app.post("/pdfs")
-async def print_pdf(response: Response, body: PrintPdfRequest):
+def print_pdf(response: Response, body: PrintPdfRequest):
     # https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#rendering-to-a-single-file
     byte_string = HTML(string=body.html).write_pdf()
 

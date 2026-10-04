@@ -1,3 +1,5 @@
+from concurrent.futures import ThreadPoolExecutor
+
 from fastapi.testclient import TestClient
 
 from .main import app
@@ -33,3 +35,15 @@ def test_strip_specific_file_name():
     assert response.status_code == 200
     assert response.headers['content-disposition'] == 'attachment; name="shipping-label"; filename="shipping-label.pdf"'
     assert response.headers['content-type'] == 'application/pdf'
+
+def test_concurrent_requests():
+    def post(_):
+        return client.post("/pdfs", json={"html": "<h1>Hello World</h1>"})
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        responses = list(pool.map(post, range(8)))
+
+    for response in responses:
+        assert response.status_code == 200
+        assert response.headers['content-type'] == 'application/pdf'
+        assert response.content.startswith(b'%PDF')
